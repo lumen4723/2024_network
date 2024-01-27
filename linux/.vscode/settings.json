@@ -3,6 +3,7 @@
         "cstring": "cpp",
         "iostream": "cpp",
         "functional": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "chrono": "cpp"
     }
 }
