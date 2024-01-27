@@ -41,7 +41,7 @@ int main() {
                 continue; // 소켓에러가 논블로킹의 특성으로 인한 에러라면 무시
             }
             // 하지만 중복 connect() 요청은 막아야함
-            else if (WSAGetLastError() == WSAEISCONN) {
+            else if (WSAGetLastError() == WSAEISCONN || WSAGetLastError() == WSAEALREADY) {
                 break; // 이미 연결된 상태라면 무시
             }
             // 둘 다 아니면 에러

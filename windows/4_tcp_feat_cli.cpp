@@ -37,10 +37,8 @@ int main () {
         }
     }
 
-    // 소켓 종료
     closesocket(clisock);
 
-    // 윈속 종료
     WSACleanup();
     return 0;
 }

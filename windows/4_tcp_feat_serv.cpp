@@ -59,7 +59,7 @@ int main () {
     }
 
     closesocket(servsock);
-    // 윈속 종료
+
     WSACleanup();
     return 0;
 }

@@ -124,8 +124,7 @@ int main() {
         while (true) {
             int recvlen = recv(clisock, buf, sizeof(buf), 0);
             if (recvlen == SOCKET_ERROR) {
-                int error = WSAGetLastError();
-                cout << "recv() error: " << error << endl;
+                cout << "recv() error" << endl;
                 return 0;
             }
             else if (recvlen == 0) {
@@ -147,7 +146,7 @@ int main() {
     }
 
     closesocket(servsock);
-    // 윈속 종료
+    
     WSACleanup();
     return 0;
 }

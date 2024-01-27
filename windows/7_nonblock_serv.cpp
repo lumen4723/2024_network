@@ -120,10 +120,8 @@ int main() {
         }
     }
 
-    // 소켓 종료
     closesocket(servsock);
 
-    // 윈속 종료
     WSACleanup();
     return 0;
 } // 논블로킹 + 동기 방식은 상당히 많은 루프를 필요로 하기 때문에 비효율적이다

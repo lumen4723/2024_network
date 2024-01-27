@@ -46,10 +46,8 @@ int main() {
         cout << "Echo: " << buf << endl;
     }
 
-    // 소켓 종료
     closesocket(clisock);
 
-    // 윈속 종료
     WSACleanup();
     return 0;
 }
