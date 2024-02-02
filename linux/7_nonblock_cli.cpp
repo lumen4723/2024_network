@@ -31,7 +31,7 @@ int main() {
     while (true) {
         if (connect(clisock, (sockaddr*)&servAddr, sizeof(servAddr)) == SOCKET_ERROR) {
             // 논블로킹 소켓은 connect()에서 한번 더 체크해줘야함
-            if (errno == EINPROGRESS) {
+            if (errno == EINPROGRESS || errno == EWOULDBLOCK) {
                 continue; // 소켓에러가 논블로킹의 특성으로 인한 에러라면 무시
             }
             // 하지만 중복 connect() 요청은 막아야함
@@ -55,7 +55,7 @@ int main() {
         while (true) {
             if (send(clisock, buf, strlen(buf) + 1, 0) == SOCKET_ERROR) {
                 // 논블로킹 소켓은 send()에서 한번 더 체크해줘야함
-                if (errno == EWOULDBLOCK) {
+                if (errno == EWOULDBLOCK || errno == EINPROGRESS) {
                     continue;
                 }
                 else {
@@ -74,7 +74,7 @@ int main() {
             recvlen = recv(clisock, buf, sizeof(buf), 0);
             if (recvlen == SOCKET_ERROR) {
                 // 논블로킹 소켓은 recv()에서 한번 더 체크해줘야함
-                if (errno == EWOULDBLOCK) {
+                if (errno == EWOULDBLOCK || errno == EINPROGRESS) {
                     continue;
                 }
                 else {

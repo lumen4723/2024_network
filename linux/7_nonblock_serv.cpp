@@ -64,7 +64,7 @@ int main() {
                 recvlen = recv(clisock, buf, sizeof(buf), 0);
                 if (recvlen == SOCKET_ERROR) {
                     // 논블로킹 소켓은 recv()에서 한번 더 체크해줘야함
-                    if (errno == EINPROGRESS) {
+                    if (errno == EINPROGRESS || errno == EWOULDBLOCK) {
                         continue;
                     }
                     else {
@@ -93,7 +93,7 @@ int main() {
                 sendlen = send(clisock, buf, strlen(buf) + 1, 0);
                 if (sendlen == SOCKET_ERROR) {
                     // 논블로킹 소켓은 send()에서 한번 더 체크해줘야함
-                    if (errno == EINPROGRESS) {
+                    if (errno == EINPROGRESS || errno == EWOULDBLOCK) {
                         continue;
                     }
                     else {
