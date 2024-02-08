@@ -109,7 +109,7 @@ int main() {
             sessions.push_back(Session{clisock});
             // 변화가 있을 때만 Accept를 하고 세션에 추가 (굉장히 효율적임)
 
-            cout << "Client connected" << endl;
+            cout << "Client Connected" << endl;
         }
 
         // 세션 목록을 순회
@@ -117,27 +117,23 @@ int main() {
             // 해당 세션의 readfds가 변경되었는지 확인
             if (FD_ISSET(session.sock, &readfds)) {
                 session.recvbytes = recv(session.sock, session.buf, DEFAULT_BUFLEN, 0);
-                if (session.recvbytes == SOCKET_ERROR) {
-                    cout << "recv() error" << endl;
-                    return 1;
-                }
-                // 파일이 변경되었는데 받은 바이트가 0이면 클라이언트가 연결을 끊은 것
-                else if (session.recvbytes == 0) {
-                    cout << "Client disconnected" << endl;
+                if (session.recvbytes == SOCKET_ERROR || session.recvbytes == 0) {
+                    cout << "Client Disconnected" << endl;
                     closesocket(session.sock);
                     session.sock = INVALID_SOCKET;
 
                     continue;
                 }
-
             }
 
             // 해당 세션의 writefds가 변경되었는지 확인
             if (FD_ISSET(session.sock, &writefds)) {
                 int sendlen = send(session.sock, session.buf, session.recvbytes, 0);
                 if (sendlen == SOCKET_ERROR) {
-                    cout << "send() error" << endl;
-                    return 1;
+                    cout << "Client Disconnected" << endl;
+                    closesocket(session.sock);
+                    session.sock = INVALID_SOCKET;
+                    continue;
                 }
 
                 session.sendbytes += sendlen;
@@ -148,6 +144,12 @@ int main() {
                     session.sendbytes = 0;
                     session.recvbytes = 0;
                 }
+            }
+        }
+
+        for (int i = 0; i < sessions.size(); i++) {
+            if (sessions[i].sock == INVALID_SOCKET) {
+                sessions.erase(sessions.begin() + i--);
             }
         }
     }

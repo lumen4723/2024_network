@@ -9,6 +9,7 @@ struct Session {
     WSABUF wsabuf = {};
     int recvbytes = 0;
     int sendbytes = 0;
+
 };
 
 void CALLBACK RecvCallback(DWORD error, DWORD recvbytes, LPWSAOVERLAPPED overlapped, DWORD flags);
@@ -46,12 +47,42 @@ int main() {
     vector<Session*> sessions;
     sessions.reserve(100);
 
-    while (true) {
-        SOCKADDR_IN cliaddr;
-        int addrlen = sizeof(cliaddr);
-        SOCKET clisock = accept(servsock, (SOCKADDR*)&cliaddr, &addrlen);
+    // WSAEVENT servEvent = WSACreateEvent();
+    // if (WSAEventSelect(servsock, servEvent, FD_ACCEPT | FD_CLOSE) == SOCKET_ERROR) {
+    //     cout << "WSAEventSelect() error" << endl;
+    //     return 1;
+    // }
 
-        if (clisock != INVALID_SOCKET) {
+    while (true) {
+
+        // if (WSAWaitForMultipleEvents(1, &servEvent, FALSE, WSA_INFINITE, FALSE) == WSA_WAIT_FAILED) {
+        //     cout << "WSAWaitForMultipleEvents() error" << endl;
+        //     break;
+        // }
+
+        // WSANETWORKEVENTS netEvents;
+        // if (WSAEnumNetworkEvents(servsock, servEvent, &netEvents) == SOCKET_ERROR) {
+        //     cout << "WSAEnumNetworkEvents() error" << endl;
+        //     break;
+        // }
+
+        // if (netEvents.lNetworkEvents & FD_ACCEPT) {
+        //     if (netEvents.iErrorCode[FD_ACCEPT_BIT] != 0) {
+        //         cout << "FD_ACCEPT error" << endl;
+        //         break;
+        //     }
+
+            SOCKADDR_IN cliaddr;
+            int addrlen = sizeof(cliaddr);
+            SOCKET clisock = accept(servsock, (SOCKADDR*)&cliaddr, &addrlen);
+            while (clisock == INVALID_SOCKET) {
+                if (WSAGetLastError() != WSAEWOULDBLOCK) {
+                    cout << "accept() error" << endl;
+                    break;
+                }
+                continue;
+            }
+
             // 이벤트를 쓰지 않기 때문에, 논블로킹 모드로 수동 전환
             u_long on = 1;
             if (ioctlsocket(clisock, FIONBIO, &on) == SOCKET_ERROR) {
@@ -66,7 +97,7 @@ int main() {
             newsession->overlapped = {};
             sessions.push_back(newsession);
 
-            cout << "Client Connected" << endl;
+            cout << "Client connected" << endl;
 
             DWORD flags = 0;
 
@@ -75,10 +106,17 @@ int main() {
                 (LPDWORD)&newsession->recvbytes, &flags,
                 &newsession->overlapped, RecvCallback
             );
+
+            SleepEx(2000, TRUE);
         }
 
-        SleepEx(50, TRUE);
-    }
+        // if (netEvents.lNetworkEvents & FD_CLOSE) {
+        //     if (netEvents.iErrorCode[FD_CLOSE_BIT] != 0) {
+        //         cout << "FD_CLOSE error" << endl;
+        //         break;
+        //     }
+        // }
+    // }
 
     closesocket(servsock);
 
@@ -91,7 +129,7 @@ void CALLBACK RecvCallback(
 ) {
     Session* session = CONTAINING_RECORD(overlapped, Session, overlapped);
     if (error || recvbytes == 0) {
-        cout << "Client Disconnected" << endl;
+        cout << "recv() error: " << WSAGetLastError() << endl;
         closesocket(session->sock);
         delete session;
         return;
@@ -108,13 +146,13 @@ void CALLBACK RecvCallback(
     ) {
         int lastError = WSAGetLastError();
         if (lastError != WSA_IO_PENDING) {
-            cout << "WSASend() error"<< endl;
+            cout << "WSASend() error: " << lastError << endl;
             closesocket(session->sock);
             delete session;
             return;
         }
 
-        SleepEx(50, TRUE);
+        SleepEx(INFINITE, TRUE);
     }
 }
 
@@ -122,8 +160,8 @@ void CALLBACK SendCallback(
     DWORD error, DWORD sendbytes, LPWSAOVERLAPPED overlapped, DWORD flags
 ) {
     Session* session = CONTAINING_RECORD(overlapped, Session, overlapped);
-    if (error) {
-        cout << "send() error" << endl;
+    if (error || sendbytes == 0) {
+        cout << "send() error: " << WSAGetLastError() << endl;
         closesocket(session->sock);
         delete session;
         return;
@@ -142,12 +180,12 @@ void CALLBACK SendCallback(
     ) {
         int lastError = WSAGetLastError();
         if (lastError != WSA_IO_PENDING) {
-            cout << "WSARecv() error" << endl;
+            cout << "WSARecv() error: " << lastError << endl;
             closesocket(session->sock);
             delete session;
             return;
         } 
         
-        SleepEx(50, TRUE);
+        SleepEx(INFINITE, TRUE);
     }
 }

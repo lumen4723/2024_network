@@ -25,7 +25,7 @@ void handleClient(SOCKET clisock) {
     }
 
     closesocket(clisock);
-    cout << "client disconnected" << endl;
+    cout << "Client Disconnected" << endl;
 }
 
 int main () {
@@ -65,7 +65,7 @@ int main () {
             return 0;
         }
 
-        cout << "client connected" << endl;
+        cout << "Client Connected" << endl;
 
         // 클라이언트와 통신할 스레드 생성
         threads.push_back(thread(handleClient, clisock));
