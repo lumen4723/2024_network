@@ -1,32 +1,6 @@
 #include "lib.h"
 
-void handleClient(SOCKET clisock) {
-    // echo 서버의 기능을 수행하는 코드
-    char buf[1024] = "";
-
-    while (true) {
-        int recvlen = recv(clisock, buf, sizeof(buf), 0);
-        if (recvlen == SOCKET_ERROR) {
-            cout << "recv() error" << endl;
-            return;
-        }
-        else if (recvlen == 0) {
-            break;
-        }
-        buf[recvlen] = '\0';
-
-        cout << "recv: " << buf << endl;
-
-        int sendlen = send(clisock, buf, recvlen, 0);
-        if (sendlen == SOCKET_ERROR) {
-            cout << "send() error" << endl;
-            return;
-        }
-    }
-
-    closesocket(clisock);
-    cout << "Client Disconnected" << endl;
-}
+void handleClient(SOCKET clisock);
 
 int main () {
     WSAData wsaData;
@@ -55,6 +29,7 @@ int main () {
     }
 
     // 클라이언트와 통신할 스레드들을 관리하기 위한 컨테이너
+    // std::thread는 C++11에서 추가된 표준 쓰레드 라이브러리
     vector<thread> threads;
 
     // 무한 루프로 클라이언트 연결을 계속 기다림
@@ -86,4 +61,29 @@ int main () {
     
     WSACleanup();
     return 0;
+}
+
+void handleClient(SOCKET clisock) {
+    // echo 서버의 기능을 수행하는 코드
+    char buf[1024] = "";
+
+    while (true) {
+        int recvlen = recv(clisock, buf, sizeof(buf), 0);
+        if (recvlen == SOCKET_ERROR) {
+            cout << "recv() error" << endl;
+            return;
+        }
+        else if (recvlen == 0) {
+            break;
+        }
+
+        int sendlen = send(clisock, buf, recvlen, 0);
+        if (sendlen == SOCKET_ERROR) {
+            cout << "send() error" << endl;
+            return;
+        }
+    }
+
+    closesocket(clisock);
+    cout << "Client Disconnected" << endl;
 }

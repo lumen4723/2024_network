@@ -62,6 +62,8 @@ int main() {
     }
 
     while (true) {
+        // WSAWaitForMultipleEvents를 사용하여 이벤트 객체를 감시
+        // return 값은 이벤트 객체의 인덱스
         int ret = WSAWaitForMultipleEvents(
             wsaEvents.size(), &wsaEvents[0],
             FALSE, WSA_INFINITE, FALSE
@@ -73,6 +75,8 @@ int main() {
 
         int index = ret - WSA_WAIT_EVENT_0;
 
+        // WSAEnumNetworkEvents를 사용하여 네트워크 이벤트를 감시
+        // 네트워크 이벤트는 FD_ACCEPT, FD_READ, FD_WRITE, FD_CLOSE 등이 있음
         WSANETWORKEVENTS networkEvents;
         if (
             WSAEnumNetworkEvents(
@@ -85,7 +89,7 @@ int main() {
         }
 
 
-        // FD_ACCEPT
+        // FD_ACCEPT 이벤트가 발생하면, accept()를 실행하여 클라이언트와 연결
         if (networkEvents.lNetworkEvents & FD_ACCEPT) {
             if (networkEvents.iErrorCode[FD_ACCEPT_BIT] != 0) {
                 cout << "FD_ACCEPT failed" << endl;
@@ -107,10 +111,10 @@ int main() {
             Session session = Session{ clisock };
             // OverLapped IO를 사용하기 위해 이벤트 객체 생성
             WSAEVENT OLEvent = WSACreateEvent();
-            session.overlapped.hEvent = OLEvent;
+            session.overlapped.hEvent = OLEvent; // 이벤트는 overlapped.hEvent에 저장
             sessions.push_back(session);
             
-            // OL이벤트는 감지용으로도 사용
+            // OL이벤트는 감지용으로도 사용, 감지는 FD_READ, FD_CLOSE
             wsaEvents.push_back(OLEvent);
             if (WSAEventSelect(clisock, OLEvent, FD_READ | FD_CLOSE) == SOCKET_ERROR) {
                 cout << "WSAEventSelect() error" << endl;
@@ -120,6 +124,7 @@ int main() {
             cout << "Client Connected" << endl;
         }
 
+        // FD_READ 이벤트가 발생하면, WSARecv를 실행하여 데이터를 받고 WSASend로 보냄
         if (networkEvents.lNetworkEvents & FD_READ) {
             if (networkEvents.iErrorCode[FD_READ_BIT] != 0) {
                 cout << "FD_READ failed" << endl;
@@ -138,37 +143,40 @@ int main() {
                     &session.overlapped, NULL
                 ) == SOCKET_ERROR
             ) {
+                // WSA_IO_PENDING 상태면, 비 동기 진행 중이므로 다음 조건문으로 넘어감
                 if (WSAGetLastError() != WSA_IO_PENDING) {
                     cout << "WSARecv() error" << endl;
                     return 1;
                 }
             }
 
-            // WSAGetOverlappedResult는 WSARecv가 완료되면 TRUE를 반환
+            // WSAGetOverlappedResult는 WSARecv가 완료되면 TRUE를 반환(awaiting completion)
             // 아직 진행 중이면, FALSE를 반환하면 WSA_IO_PENDING 상태
             if (
                 WSAGetOverlappedResult(
                     session.sock, &session.overlapped,
                     (LPDWORD)&session.recvbytes, FALSE, &flags
                 )
-                && WSASend( // WSASend를 실행하면서 Overlapped IO를 사용
+                && WSASend( // 그리고 WSASend를 실행하면서 Overlapped IO를 사용
                     session.sock, &session.wsabuf, 1,
                     (LPDWORD)&session.sendbytes, flags,
                     &session.overlapped, NULL
                 ) == SOCKET_ERROR
             ) {
+                // 동일하게 WSA_IO_PENDING 상태면, 비 동기 진행 중이므로 다음 조건문으로 넘어감
                 if (WSAGetLastError() != WSA_IO_PENDING) {
                     cout << "WSASend() error" << endl;
                     return 1;
                 }
             } // WSAGetOverlappedResult는 WSASend가 완료되면 TRUE를 반환
-            // 하지만, 체이닝 할 게 없으므로, 다음 조건문으로 넘어감
+            // 하지만, send 뒤에 체이닝 할 게 없으므로, 다음 조건문으로 넘어감
         }
 
+        // FD_CLOSE 이벤트가 발생하면, closesocket을 실행하여 클라이언트와 연결 해제
         if (networkEvents.lNetworkEvents & FD_CLOSE) {
             if (
                 networkEvents.iErrorCode[FD_CLOSE_BIT] != 0
-                && networkEvents.iErrorCode[FD_CLOSE_BIT] != WSAECONNABORTED
+                && networkEvents.iErrorCode[FD_CLOSE_BIT] != WSAECONNABORTED // 강제종료 예외처리
             ) {
                 cout << "FD_CLOSE failed" << endl;
                 return 1;
@@ -189,4 +197,4 @@ int main() {
     WSACleanup();
     return 0;
 } // Overlapped IO + Event Model은 Non-Blocking + Asynchronous 라서 빠르고 효율적이지만,
-// 여전히 하나의 이벤트에는 64개의 클라이언트만 감시할 수 있음
+// 여전히 하나의 이벤트에는 최대 64개의 클라이언트만 동시 감시할 수 있음

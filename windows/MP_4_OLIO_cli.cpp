@@ -4,6 +4,7 @@ int main() {
     WSAData wsaData;
     WSAStartup(MAKEWORD(2, 2), &wsaData);
 
+    // WSASocket을 사용하여 비동기 소켓 생성
     SOCKET clisock = WSASocket(
         AF_INET, SOCK_STREAM, 0,
         NULL, 0, WSA_FLAG_OVERLAPPED
@@ -27,6 +28,7 @@ int main() {
         return 1;
     }
 
+    // 클라이언트는 단일 세션이기 때문에 구조체를 사용하지 않음
     char sendbuf[1024] = {}, recvbuf[1024] = {};
 
     WSABUF sendWsabuf;
@@ -40,52 +42,54 @@ int main() {
 
     DWORD flags = 0, Bytes = 0;
 
-while (true) {
-    sendbuf[1024] = {}; recvbuf[1024] = {};
+    while (true) {
+        // 초기화 필요
+        sendbuf[1024] = {}; recvbuf[1024] = {};
 
-    cout << "Input: "; cin >> sendbuf;
-    sendWsabuf.len = strlen(sendbuf);
+        cout << "Input: "; cin >> sendbuf;
+        sendWsabuf.len = strlen(sendbuf);
 
-    sendOverlapped = {}; recvOverlapped = {};
-    flags = 0; Bytes = 0;
+        sendOverlapped = {}; recvOverlapped = {};
+        flags = 0; Bytes = 0;
 
-    sendWsabuf.buf = sendbuf;
-    sendWsabuf.len = sizeof(sendbuf);
-    recvWsabuf.buf = recvbuf;
-    recvWsabuf.len = sizeof(recvbuf);
+        sendWsabuf.buf = sendbuf;
+        sendWsabuf.len = sizeof(sendbuf);
+        recvWsabuf.buf = recvbuf;
+        recvWsabuf.len = sizeof(recvbuf);
 
-    // 데이터 전송
-    if (WSASend(clisock, &sendWsabuf, 1, &Bytes, 0, &sendOverlapped, NULL) == SOCKET_ERROR) {
-        if (WSAGetLastError() != WSA_IO_PENDING) {
-            cout << "WSASend() error" << endl;
+        // 비동기 데이터 송신
+        if (WSASend(clisock, &sendWsabuf, 1, &Bytes, 0, &sendOverlapped, NULL) == SOCKET_ERROR) {
+            if (WSAGetLastError() != WSA_IO_PENDING) {
+                cout << "WSASend() error" << endl;
+                break;
+            }
+        }
+
+        // WSASend() 작업 완료 대기(awaiting completion)
+        if (WSAGetOverlappedResult(clisock, &sendOverlapped, &Bytes, TRUE, &flags) == FALSE) {
+            cout << "WSAGetOverlappedResult() error" << endl;
             break;
         }
-    }
 
-    // WSASend() 작업 완료 대기
-    if (!WSAGetOverlappedResult(clisock, &sendOverlapped, &Bytes, TRUE, &flags)) {
-        cout << "WSAGetOverlappedResult() error after send: " << WSAGetLastError() << endl;
-        break;
-    }
-
-    // 데이터 수신
-    if (WSARecv(clisock, &recvWsabuf, 1, &Bytes, &flags, &recvOverlapped, NULL) == SOCKET_ERROR) {
-        if (WSAGetLastError() != WSA_IO_PENDING) {
-            cout << "WSARecv() error" << endl;
-            break;
+        // 비동기 데이터 수신
+        if (WSARecv(clisock, &recvWsabuf, 1, &Bytes, &flags, &recvOverlapped, NULL) == SOCKET_ERROR) {
+            if (WSAGetLastError() != WSA_IO_PENDING) {
+                cout << "WSARecv() error" << endl;
+                break;
+            }
         }
-    }
 
-    // WSARecv() 작업 완료 대기
-    if (!WSAGetOverlappedResult(clisock, &recvOverlapped, &Bytes, TRUE, &flags)) {
-        cout << "WSAGetOverlappedResult() error after recv: " << WSAGetLastError() << endl;
-        continue;
-    }
+        // WSARecv() 작업 완료 대기(awaiting completion)
+        if (WSAGetOverlappedResult(clisock, &recvOverlapped, &Bytes, TRUE, &flags) == FALSE) {
+            cout << "WSAGetOverlappedResult() error" << endl;
+            continue;
+        }
 
-    cout << "Echo: " << recvbuf << endl;
-}
+        cout << "Echo: " << recvbuf << endl;
+    }
 
     closesocket(clisock);
     WSACleanup();
     return 0;
-}
+} // 클라이언트는 멀티플렉싱이 크게 요구되지 않기 때문에,
+// 비동기 소켓의 효과를 크게 느끼지 못할 수 있음

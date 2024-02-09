@@ -1,63 +1,6 @@
 #include "lib.h"
 
-void handleClient(SOCKET clisock) {
-    // echo 서버의 기능을 수행하는 코드(non-blocking)
-    char buf[1024] = "";
-
-    while (true) {
-        int recvlen;
-        while (true) {
-            recvlen = recv(clisock, buf, sizeof(buf), 0);
-            if (recvlen == SOCKET_ERROR) {
-                if (WSAGetLastError() == WSAEWOULDBLOCK) {
-                    continue;
-                }
-                else {
-                    cout << "recv() error" << endl;
-                    closesocket(clisock);
-                    return;
-                }
-            }
-            else {
-                break;
-            }
-        }
-
-        if (recvlen == 0) {
-            closesocket(clisock);
-            cout << "Client Disconnected" << endl;
-            return;
-        }
-
-        buf[recvlen] = '\0';
-
-        cout << "Recv: " << buf << endl;
-
-        int sendlen;
-        while (true) {
-            sendlen = send(clisock, buf, strlen(buf) + 1, 0);
-            if (sendlen == SOCKET_ERROR) {
-                if (WSAGetLastError() == WSAEWOULDBLOCK) {
-                    continue;
-                }
-                else {
-                    cout << "send() error" << endl;
-                    closesocket(clisock);
-                    return;
-                }
-            }
-            else {
-                break;
-            }
-        }
-
-        if (sendlen == 0) {
-            closesocket(clisock);
-            cout << "Client Disconnected" << endl;
-            return;
-        }
-    }
-}
+void handleClient(SOCKET clisock);
 
 int main() {
     WSAData wsaData;
@@ -92,6 +35,7 @@ int main() {
     }
 
     // 클라이언트와 통신할 스레드들을 관리하기 위한 컨테이너
+    // std::thread는 C++11에서 추가된 표준 쓰레드 라이브러리
     vector<thread> threads;
 
     // 핸들 함수를 제외하고 나머지는 크게 다르지 않다
@@ -124,4 +68,59 @@ int main() {
 
     WSACleanup();
     return 0;
+}
+
+void handleClient(SOCKET clisock) {
+    // echo 서버의 기능을 수행하는 코드(non-blocking)
+    char buf[1024] = "";
+
+    while (true) {
+        int recvlen;
+        while (true) {
+            recvlen = recv(clisock, buf, sizeof(buf), 0);
+            if (recvlen == SOCKET_ERROR) {
+                if (WSAGetLastError() == WSAEWOULDBLOCK) {
+                    continue;
+                }
+                else {
+                    cout << "recv() error" << endl;
+                    closesocket(clisock);
+                    return;
+                }
+            }
+            else {
+                break;
+            }
+        }
+
+        if (recvlen == 0) {
+            closesocket(clisock);
+            cout << "Client Disconnected" << endl;
+            return;
+        }
+
+        int sendlen;
+        while (true) {
+            sendlen = send(clisock, buf, strlen(buf) + 1, 0);
+            if (sendlen == SOCKET_ERROR) {
+                if (WSAGetLastError() == WSAEWOULDBLOCK) {
+                    continue;
+                }
+                else {
+                    cout << "send() error" << endl;
+                    closesocket(clisock);
+                    return;
+                }
+            }
+            else {
+                break;
+            }
+        }
+
+        if (sendlen == 0) {
+            closesocket(clisock);
+            cout << "Client Disconnected" << endl;
+            return;
+        }
+    }
 }

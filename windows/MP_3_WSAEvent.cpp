@@ -121,7 +121,7 @@ int main() {
                     return 1;
                 }
 
-                cout << "Client connected" << endl;
+                cout << "Client Connected" << endl;
             }
         }
 
@@ -195,14 +195,14 @@ int main() {
         if (networkEvents.lNetworkEvents & FD_CLOSE) {
             if (
                 networkEvents.iErrorCode[FD_CLOSE_BIT] != 0
-                && networkEvents.iErrorCode[FD_CLOSE_BIT] != WSAECONNABORTED
+                && networkEvents.iErrorCode[FD_CLOSE_BIT] != WSAECONNABORTED // 클라이언트가 강제종료
             ) {
                 cout << "FD_CLOSE error"
                     << networkEvents.iErrorCode[FD_CLOSE_BIT] << endl;
                 return 1;
             }
 
-            cout << "Client disconnected" << endl;
+            cout << "Client Disconnected" << endl;
             closesocket(sessions[index].sock);
             WSACloseEvent(wsaEvents[index]);
             wsaEvents.erase(wsaEvents.begin() + index);
