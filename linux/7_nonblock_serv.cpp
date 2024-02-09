@@ -59,7 +59,7 @@ int main() {
 
         while (true) {
             int recvlen;
-            // 논블로킹 소켓은 send()도 루프를 돌면서 될 때까지 계속 시도해야함
+            // 논블로킹 소켓은 recv()도 루프를 돌면서 될 때까지 계속 시도해야함
             while (true) {
                 recvlen = recv(clisock, buf, sizeof(buf), 0);
                 if (recvlen == SOCKET_ERROR) {
