@@ -4,6 +4,8 @@
         "iostream": "cpp",
         "functional": "cpp",
         "ostream": "cpp",
-        "chrono": "cpp"
+        "chrono": "cpp",
+        "atomic": "cpp",
+        "condition_variable": "cpp"
     }
 }

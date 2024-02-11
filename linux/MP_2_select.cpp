@@ -60,7 +60,7 @@ int main() {
         // Select 후보군에 서버 소켓을 추가 (Listen 감지용)
         FD_SET(servsock, &readfds);
 
-        // 리눅스 파일(소켓) 디스크립터의 최대 값을 인자로 넣어줘야함
+        // 리눅스는 파일(소켓) 디스크립터의 최대 값을 인자로 넣어줘야함
         int maxfd = servsock;
         // 세션 목록을 순회하며 소켓을 readfds와 writefds에 추가 (recv, send 감지용)
         for (Session& session : sessions) {

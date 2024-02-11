@@ -43,9 +43,10 @@ using namespace std;
 class MemoryPool {
 	size_t blockSize;
 	vector<char*> freeBlocks; // 고정 블록을 가리키는 포인터 벡터
-	mutex _mutex;
+	mutex mtx;
 
 public:
+	// explicit: 묵시적 변환을 막음 == 반드시 생성자 호출을 통해서만 객체 생성 가능
 	explicit MemoryPool(size_t blockSize, size_t reserve = 0) : blockSize(blockSize) {
 		freeBlocks.reserve(reserve); // 임시 크기를 미리 할당, 속도 UP, 메모리 효율 DOWN
 
@@ -62,7 +63,7 @@ public:
 
 	void* alloc() {
 		// 뮤텍스를 이용하여 동시성 문제 해결
-		lock_guard<mutex> lock(_mutex);
+		lock_guard<mutex> lock(mtx);
 
 		void* block;
 
@@ -79,7 +80,7 @@ public:
 
 	void dealloc(void* ptr) {
 		// 뮤텍스를 이용하여 동시성 문제 해결
-		lock_guard<mutex> lock(_mutex);
+		lock_guard<mutex> lock(mtx);
 
 		if (ptr != nullptr) {
 			// 블록을 가리키는 포인터를 벡터에 추가
@@ -90,7 +91,7 @@ public:
 
 	void resize(size_t addreserve) {
 		// 뮤텍스를 이용하여 동시성 문제 해결
-		lock_guard<mutex> lock(_mutex);
+		lock_guard<mutex> lock(mtx);
 
 		// 벡터의 크기를 늘리고, 블록을 추가로 생성하여 벡터에 추가
 		freeBlocks.reserve(freeBlocks.capacity() + addreserve);
