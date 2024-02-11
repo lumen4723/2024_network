@@ -76,7 +76,7 @@ void handleClient(int clisock) {
                     continue;
                 }
                 else {
-                    cout << "recv() error" << endl;
+                    cout << "Client Disconnected" << endl;
                     close(clisock);
                     return;
                 }

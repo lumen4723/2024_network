@@ -97,7 +97,7 @@ int main() {
             if (pfds[i].revents & POLLOUT) {
                 int sendlen = send(sessions[i].sock, sessions[i].buf, sessions[i].recvbytes, 0);
                 if (sendlen == SOCKET_ERROR) {
-                    cout << "send() error" << endl;
+                    cout << "Client Disconnected" << endl;
                     close(sessions[i].sock);
                     sessions.erase(sessions.begin() + i);
                     pfds.erase(pfds.begin() + i--);

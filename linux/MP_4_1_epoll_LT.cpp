@@ -134,7 +134,7 @@ int main() {
             if (epEvents[i].events & EPOLLOUT) {
                 int sendlen = send(session->sock, session->buf, session->recvbytes, 0);
                 if (sendlen == SOCKET_ERROR) {
-                    cout << "send() error" << endl;
+                    cout << "Client Disconnected" << endl;
                     close(session->sock);
                     // erase-remove idiom을 사용하여 sessions에서 session을 제거
                     sessions.erase(
