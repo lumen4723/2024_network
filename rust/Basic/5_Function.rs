@@ -1,6 +1,6 @@
 fn main() {
     let x = 5;
-    
+
     func1(x);
 
     let y = {

@@ -1,40 +1,40 @@
-enum Coin {
-    Penny,
-    Nickel,
-    Dime,
-    Quarter,
-}
-
-fn value_in_cents(coin: Coin) -> u32 {
-    match coin {
-        Coin::Penny => {
-            println!("Lucky penny!");
-            1
-        }
-        Coin::Nickel => 5,
-        Coin::Dime => 10,
-        Coin::Quarter => 25,
-    }
-}
-
-fn plus_one(x: Option<i32>) -> Option<i32> {
-    match x {
-        None => None,
-        Some(i) => Some(i + 1),
-    }
-}
-
 fn main() {
-    let coin = Coin::Penny;
-    println!("value_in_cents(coin) = {}", value_in_cents(coin));
-    let coin = Coin::Nickel;
-    println!("value_in_cents(coin) = {}", value_in_cents(coin));
-    let coin = Coin::Dime;
-    println!("value_in_cents(coin) = {}", value_in_cents(coin));
-    let coin = Coin::Quarter;
-    println!("value_in_cents(coin) = {}", value_in_cents(coin));
+    enum Coin_1 {
+        Penny,
+        Nickel,
+        Dime,
+        Quarter,
+    }
+
+    fn value_in_cents_1(coin: Coin_1) -> u32 {
+        match coin {
+            Coin_1::Penny => {
+                println!("Lucky penny!");
+                1
+            }
+            Coin_1::Nickel => 5,
+            Coin_1::Dime => 10,
+            Coin_1::Quarter => 25,
+        }
+    }
+
+    let coin = Coin_1::Penny;
+    println!("value_in_cents(coin) = {}", value_in_cents_1(coin));
+    let coin = Coin_1::Nickel;
+    println!("value_in_cents(coin) = {}", value_in_cents_1(coin));
+    let coin = Coin_1::Dime;
+    println!("value_in_cents(coin) = {}", value_in_cents_1(coin));
+    let coin = Coin_1::Quarter;
+    println!("value_in_cents(coin) = {}", value_in_cents_1(coin));
 
 
+
+    fn plus_one(x: Option<i32>) -> Option<i32> {
+        match x {
+            None => None,
+            Some(i) => Some(i + 1),
+        }
+    }
 
     let five = Some(5);
     let six = plus_one(five);
@@ -78,18 +78,32 @@ fn main() {
         println!("not one or none");
     }
 
+    #[derive(Debug)]
+    struct UsState {
+        name: String,
+    }
 
+    enum Coin_2 {
+        Penny,
+        Nickel,
+        Dime,
+        Quarter(UsState), // enum의 케이스에는 구조체와 같이 값이 들어갈 수 있음
+    }
+
+    let coin = Coin_2::Quarter(UsState {name: String::from("New York")}); // 케이스에 값이 들어감
 
     let mut count = 0;
     match coin {
-        Coin::Quarter(state) => println!("State quarter from {:?}!", state),
+        Coin_2::Quarter(ref state) => println!("State quarter from {:?}!", state), // ref는 참조를 의미함
+        // 패턴 매칭에 struct를 디스트럭처링할 때 ref를 사용하면 불변 참조로 대여한다는 의미
         _ => count += 1,
     }
 
     // 즉, 위의 코드는 아래와 같이 변환 가능함
 
     let mut count = 0;
-    if let Coin::Quarter(state) = coin {
+    // 패턴 매칭을 위한 키워드인 if let을 사용함
+    if let Coin_2::Quarter(state) = coin { // 참조를 사용하지 않으면 소유권이 이동함
         println!("State quarter from {:?}!", state);
     } else {
         count += 1;

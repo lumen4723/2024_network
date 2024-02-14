@@ -26,7 +26,7 @@ fn main() {
 
     let tuple: (i32, f64, &str) = (1, 2.3, "45"); // 튜플 타입( 일명 곱타입 )
 
-    
+
 
     let (x, y, z) = tuple; // 디스트럭쳐링
 
@@ -41,9 +41,9 @@ fn main() {
     let a = [1, 2, 3, 4, 5];
     let index = 10;
 
-    let element = a[index];
+    // let element = a[index];
     // C/C++은 Out Of Index가 발생하긴 하지만, 접근은 여전히 가능하여 문제가 커질 수 있다
     // Rust는 미리 size보다 큰지 검사한 뒤, Panic상태를 주고 즉시 크래시 종료가 실행된다
 
-    println!("The value of element is: {}", element);
+    // println!("The value of element is: {}", element);
 }
