@@ -12,6 +12,8 @@ fn main() {
     //     println!("num is not Zero");
     // }
 
+
+
     let number = 6;
 
     if number % 4 == 0 {
@@ -26,6 +28,8 @@ fn main() {
     else {
         println!("number is not divisible by 4, 3, or 2");
     }
+
+
 
     let condition = true;
 
@@ -42,6 +46,8 @@ fn main() {
     //     else { "six" }; // 하지만, 타입이 안 맞는 두 값을 if문 리턴으로 줄 수는 없음
 
     // println!("The value of number is: {}", number);
+
+
 
     let mut i = 0;
 
@@ -61,6 +67,7 @@ fn main() {
     }
 
 
+
     let a = [10, 20, 30, 40, 50];
     let mut index = 0;
 
@@ -75,7 +82,7 @@ fn main() {
     }
 
     for number in (1..10).rev() {
-        println!("{}!", number);
+        print!("{}! ", number);
     }
     println!("Zero Count");
 }

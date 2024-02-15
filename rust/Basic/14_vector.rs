@@ -9,6 +9,8 @@ fn main() {
     v.push(7);
     v.push(8);
 
+
+
     {
         let v = vec![1, 2, 3, 4];
     } // 벡터는 스코프를 벗어나면서 모든 원소를 해제함
@@ -23,6 +25,8 @@ fn main() {
         Some(x) => println!("val = {}", x),
         None => println!("None"),
     }
+
+
 
     let v = vec![1, 2, 3, 4, 5];
 
@@ -83,5 +87,4 @@ fn main() {
             SpreadsheetCell::Text(x) => println!("Text = {}", x),
         }
     }
-    
 }

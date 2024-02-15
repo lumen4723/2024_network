@@ -1,4 +1,4 @@
-use std::io::Write; // 이걸 추가해야 print!()로 출력이 가능하다
+use std::io::Write; // 이걸 추가해야 .flush가 가능하다
 
 fn main() {
     println!("HELLO"); // 무조건 출력하고 개행이 된다

@@ -64,9 +64,8 @@ fn main() {
     // println!("7_ b = {}", b); // 대여가 끝났으므로 error
 
 
-    
 
-    let spaces = "   "; // 묵시적으로 타입은 &str이다
+    let mut spaces = "   "; // 묵시적으로 타입은 &str이다
     // spaces = spaces.len(); // 묵시적으로 타입은 usize이므로 타입이 바뀐다 -> 타입 변경은 불가능하다
     let spaces = spaces.len(); // 타입의 변경은 안되지만, 다른 타입의 같은 이름 새로운 변수로 할당하는 거라면 ok
     println!("8_ spaces = {}", spaces);
