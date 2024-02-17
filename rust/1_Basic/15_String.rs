@@ -11,7 +11,7 @@ fn main() {
 
 
 
-    // string 은 기본적으로 utf-8로 인코딩됨
+    // rust의 string 은 기본적으로 utf-8로 인코딩됨
     let hello = String::from("السلام عليكم");
     let hello = String::from("Dobrý den");
     let hello = String::from("Hello");

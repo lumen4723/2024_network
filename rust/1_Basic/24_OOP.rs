@@ -13,6 +13,7 @@ fn main() {
 
     impl Screen {
         fn run(&self) {
+            // self.components.iter()로 각 컴포넌트를 가져와서 draw() 메서드를 호출함
             for component in self.components.iter() {
                 component.draw();
             }
@@ -26,6 +27,7 @@ fn main() {
     }
 
     impl Draw for Button {
+        //Draw 트레잇을 오버라이딩함
         fn draw(&self) {
             println!("Button: {}, {}, {}", self.width, self.height, self.label);
         }
@@ -36,6 +38,7 @@ fn main() {
     }
 
     impl Draw for Text {
+        //Draw 트레잇을 오버라이딩함
         fn draw(&self) {
             println!("Text: {}", self.content);
         }

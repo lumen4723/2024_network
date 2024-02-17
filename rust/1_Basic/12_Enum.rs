@@ -9,10 +9,10 @@ fn main() {
         println!("ip_type = {:?}", ip_type);
     }
 
-    let four = IpAddrKind::V4;
+    let four = IpAddrKind::V4; // enum의 각 케이스는 자체적인 타입
     let six = IpAddrKind::V6;
 
-    route(IpAddrKind::V4);
+    route(IpAddrKind::V4); // enum은 다른 타입과 마찬가지로 함수의 매개변수로 사용 가능
     route(IpAddrKind::V6);
 
 

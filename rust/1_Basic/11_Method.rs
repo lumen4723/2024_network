@@ -10,6 +10,7 @@ fn main() {
         }
     
         fn can_hold(&self, other: &Rectangle) -> bool {
+            // 크기를 비교하여 self가 other보다 크면 true를 리턴
             self.length > other.length && self.width > other.width
         }
     
@@ -37,6 +38,6 @@ fn main() {
 
 
 
-    let sq = Rectangle::square(3);
+    let sq = Rectangle::square(3); // 연관 함수 호출
     println!("sq.area() = {}", sq.area());
 }

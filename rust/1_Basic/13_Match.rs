@@ -7,7 +7,8 @@ fn main() {
     }
 
     fn value_in_cents_1(coin: Coin_1) -> u32 {
-        match coin {
+        // enum과 잘 어울리는 match 표현식
+        match coin { // 얼핏보면 스위치문과 비슷해 보이지만 매우 다름
             Coin_1::Penny => {
                 println!("Lucky penny!");
                 1
@@ -16,7 +17,7 @@ fn main() {
             Coin_1::Dime => 10,
             Coin_1::Quarter => 25,
         }
-    }
+    } // 패턴 매칭은 스위치문보다 강력하고 다양한 패턴들에 매칭할 수 있음
 
     let coin = Coin_1::Penny;
     println!("value_in_cents(coin) = {}", value_in_cents_1(coin));
@@ -32,7 +33,7 @@ fn main() {
     fn plus_one(x: Option<i32>) -> Option<i32> {
         match x {
             None => None,
-            Some(i) => Some(i + 1),
+            Some(i) => Some(i + 1), // 스위치문과 달리 패턴 매칭은 디스트럭처링도 가능함
         }
     }
 

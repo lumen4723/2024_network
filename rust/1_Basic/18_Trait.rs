@@ -65,7 +65,7 @@ fn main() {
 
 pub trait Summarizable_1 { // 퍼블릭 트레잇을 만들어서 다른 모듈에서도 사용할 수 있게 함
     fn summary(&self) -> String;
-} // 추상 메소드와 비슷한 역할을 한다
+} // 추상 메소드와 비슷한 역할을 하지만 조금 다름
 
 pub struct Tweet_1 {
     pub username: String,
@@ -85,15 +85,15 @@ impl Summarizable_1 for NewsArticle_1 { // 특정 구조체에서 트레잇을 �
     fn summary(&self) -> String {
         format!("{}, by {} ({})", self.headline, self.author, self.location)
     }
-} // 추상 메소드를 구상 메소드로 구현
-
-
+} // 추상 메소드를 구상 메소드로 구현하는 느낌
 
 impl Summarizable_1 for Tweet_1 {
     fn summary(&self) -> String {
         format!("{}: {}", self.username, self.content)
     }
 }
+
+
 
 struct WeatherForecast {
     high_temp: f64,
@@ -115,7 +115,7 @@ pub trait Summarizable_2 { // 트레잇은 디폴트 구현을 할 수 있음
     fn summary(&self) -> String {
         String::from("(Read more...)")
     }
-}
+} // 이것이 추상 메소드와 다른 점임
 
 pub struct NewsArticle_2 {
     pub headline: String,
@@ -141,6 +141,8 @@ impl Summarizable_2 for NewsArticle_3 {
     }
 }
 
+
+
 pub trait Summarizable_3 { // 트레잇은 여러개의 메소드를 가질 수 있음
     fn author_summary(&self) -> String; // 디폴트가 구현 안 됨
 
@@ -148,8 +150,6 @@ pub trait Summarizable_3 { // 트레잇은 여러개의 메소드를 가질 수 
         format!("(Read more from {}...)", self.author_summary())
     }
 }
-
-
 
 pub struct Tweet_2 {
     pub username: String,

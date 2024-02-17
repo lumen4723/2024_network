@@ -1,5 +1,5 @@
 fn main() {
-    // 이터레이터 트레잇
+    // Iterator 트레잇
     trait Iterator {
         type Item;
     
@@ -11,7 +11,7 @@ fn main() {
         end: u32,
     }
 
-    // 이터레이터 트레잇은 next 메서드를 통해 다음 값을 반환함
+    // Iterator 트레잇은 next 메서드를 통해 다음 값을 반환함
     impl Iterator for Counter {
         type Item = u32;
     
