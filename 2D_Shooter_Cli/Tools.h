@@ -12,14 +12,22 @@ GLFWwindow* init_glfw(
     const string title = "lumen GL"
 );
 
-void make_Vertex_Attribs (
+void make_Vertex_Attrs_And_Draw (
     vector<uint32_t> &VAOs,
     vector<uint32_t> &VBOs,
     vector<uint32_t> &EBOs,
     uint32_t psize,
     uint32_t bsize,
     vector<Chara> players,
-    vector<Bullet> bullets,
-    vector<vector<float>> vertices,
-    vector<vector<uint32_t>> indices
+    vector<Bullet> bullets
+);
+
+bool Check_Collision_CB(
+    Chara player,
+    Bullet bullet
+);
+
+bool Check_Collision_CC(
+    Chara player1,
+    Chara player2
 );

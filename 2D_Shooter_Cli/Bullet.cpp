@@ -6,7 +6,8 @@ Bullet::Bullet(
     float speed,
     float dirX,
     float dirY,
-    uint32_t shaderProgram
+    uint32_t shaderProgram,
+    string shooterName
 ) {
     this->startX = posX;
     this->startY = posY;
@@ -16,11 +17,10 @@ Bullet::Bullet(
     this->dirX = dirX;
     this->dirY = dirY;
     this->shaderProgram = shaderProgram;
+    this->shooterName = shooterName;
 }
 
-Bullet::~Bullet() {
-    // cout << "Bullet is gone." << endl;
-}
+Bullet::~Bullet() {}
 
 void Bullet::set_posX(float posX) {
     this->posX = posX;
@@ -66,14 +66,18 @@ uint32_t Bullet::get_shaderProgram() {
     return shaderProgram;
 }
 
+string Bullet::get_shooterName() {
+    return shooterName;
+}
+
 void Bullet::move() {
     this->posX += this->dirX * this->speed;
     this->posY += this->dirY * this->speed;
 }
 
-float Bullet::totalmoved() {
-    return sqrt(
-        pow(this->posX - this->startX, 2) +
-        pow(this->posY - this->startY, 2)
-    );
-}
+// float Bullet::totalmoved() {
+//     return sqrt(
+//         pow(this->posX - this->startX, 2) +
+//         pow(this->posY - this->startY, 2)
+//     );
+// }

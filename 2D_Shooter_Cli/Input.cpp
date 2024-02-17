@@ -4,7 +4,7 @@
 #include "Chara.h"
 
 void processInput(GLFWwindow *window, Chara *player) {
-    float speed = 0.01f;
+    float speed = 0.005f;
 
     // 키보드 입력
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
@@ -32,19 +32,17 @@ void processInput(GLFWwindow *window, Chara *player) {
 
             double mposX, mposY;
             glfwGetCursorPos(window, &mposX, &mposY);
-            cout << mposX << " " << mposY << endl;
-            cout << player->get_posX() << " " << player->get_posY() << endl;
 
             // 마우스 좌표를 윈도우 좌표로 변환
             int width, height;
             glfwGetWindowSize(window, &width, &height);
 
-            mposX = (mposX - width / 2) / (width / 2);
-            mposY = (height / 2 - mposY) / (height / 1.125);
+            // mposX = (mposX - width / 2) / (width / 2);
+            // mposY = (height / 2 - mposY) / (height / 1.125); // (height / width - height) == 1.125
+            mposX = mposX / width * 2 - 1;
+            mposY = (0.5 - mposY / height) * 1.125;
             double x = mposX - player->get_posX();
             double y = mposY - player->get_posY();
-            cout << mposX << " " << mposY << endl;
-
 
             // 명령 추가
             double sqrtdist = sqrt(x * x + y * y);

@@ -60,4 +60,6 @@ public:
 
     void set_attack_dir(float x, float y);
     pair<float, float> get_attack_dir();
+
+    void damaged(int damage);
 };

@@ -45,10 +45,10 @@ fn main() {
 
 
 
-    enum Option<T> { // 이전에 본 Option은 제네릭의 예시이다
-        Some(T),
-        None,
-    }
+    // enum Option<T> { // 이전에 본 Option은 제네릭의 예시이다
+    //     Some(T),
+    //     None,
+    // }
 
     enum Result<T, E> { // Result도 제네릭이다
         Ok(T),
@@ -99,10 +99,10 @@ fn main() {
     let integer = Some(5);
     let float = Some(5.0);
 
-    enum Option<T> {
-        Some(T),
-        None,
-    }
+    // enum Option<T> {
+    //     Some(T),
+    //     None,
+    // }
 
     enum Option_i32 {
         Some(i32),
@@ -119,8 +119,8 @@ fn main() {
     // 아래 네 개의 변수는 모두 같은 성능을 가짐
     // 이를 단형성화(monomorphization)라고 한다
 
-    let integer = Option<T>::Some(5);
-    let float = Option<T>::Some(5.0);
+    let integer = Option::Some(5); // 이는 제네릭이다
+    let float = Option::Some(5.0); // Option<T> 로 받고 T를 타입 추론하여 사용한다
     let integer = Option_i32::Some(5);
     let float = Option_f64::Some(5.0);
 }

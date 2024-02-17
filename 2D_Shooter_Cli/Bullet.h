@@ -12,6 +12,7 @@ private:
     float dirX;
     float dirY;
     uint32_t shaderProgram;
+    string shooterName;
 
 public:
     Bullet(
@@ -20,7 +21,8 @@ public:
         float speed = 0,
         float dirX = 0,
         float dirY = 0,
-        uint32_t shaderProgram = 0
+        uint32_t shaderProgram = 0,
+        string shooterName = "default"
     );
     ~Bullet();
 
@@ -36,8 +38,9 @@ public:
     float get_dirX();
     float get_dirY();
     uint32_t get_shaderProgram();
+    string get_shooterName();
 
     void move();
 
-    float totalmoved();
+    // float totalmoved();
 };

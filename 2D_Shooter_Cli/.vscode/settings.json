@@ -5,6 +5,13 @@
         "vector": "cpp",
         "thread": "cpp",
         "utility": "cpp",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "format": "cpp",
+        "initializer_list": "cpp",
+        "list": "cpp",
+        "xhash": "cpp",
+        "xstring": "cpp",
+        "xtree": "cpp",
+        "xutility": "cpp"
     }
 }

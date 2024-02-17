@@ -1,10 +1,10 @@
 use std::collections::HashMap; // 해시맵은 표준 라이브러리에 있음
 
 fn main() {
-    let mut scores1 = HashMap::new(); // HashMap은 키와 값의 쌍을 저장하는 데이터 구조체
+    let mut scores = HashMap::new(); // HashMap은 키와 값의 쌍을 저장하는 데이터 구조체
 
-    scores1.insert(String::from("Blue"), 10); // insert() 메소드로 키와 값을 추가함
-    scores1.insert(String::from("Yellow"), 50);
+    scores.insert(String::from("Blue"), 10); // insert() 메소드로 키와 값을 추가함
+    scores.insert(String::from("Yellow"), 50);
     // 이 때 scores는 <String, i32> 타입이 됨
 
 
@@ -29,12 +29,12 @@ fn main() {
 
 
     let team_name = String::from("Blue");
-    let score = scores1.get(&team_name); // get() 메소드로 키에 해당하는 값을 얻음
+    let score = scores.get(&team_name); // get() 메소드로 키에 해당하는 값을 얻음
     println!("score is {:?}", score); // get()의 반환값은 Option<T> 타입이 됨
 
 
 
-    for (key, value) in &scores1 { // HashMap은 순회할 때 순서가 보장되지 않음
+    for (key, value) in &scores { // HashMap은 순회할 때 순서가 보장되지 않음
         println!("{}: {}", key, value);
     }
 

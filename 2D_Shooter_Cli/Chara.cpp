@@ -18,9 +18,7 @@ Chara::Chara(
     action = State::ATTACKABLE;
 }
 
-Chara::~Chara() {
-    // cout << "Chara " << name << " is dead." << endl;
-}
+Chara::~Chara() {}
 
 void Chara::set_name(string name) {
     this->name = name;
@@ -85,4 +83,8 @@ void Chara::set_attack_dir(float x, float y) {
 
 pair<float, float> Chara::get_attack_dir() {
     return attack_dir;
+}
+
+void Chara::damaged(int damage) {
+    hp -= damage;
 }
