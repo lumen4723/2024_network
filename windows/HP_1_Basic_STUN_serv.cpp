@@ -1,5 +1,6 @@
 #include "lib.h"
 
+// 스턴 서버는 가급적이면 공인 IP를 직접 사용하는 서버를 쓰는 것이 좋다
 int main() {
     WSAData wsaData;
     WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -50,6 +51,7 @@ int main() {
         // cout << "recv2: " << buf2 << endl;
         memcpy(buf4, buf2, 22);
 
+        // 출력 규칙은 [자신의 pub IP:Port 상대방의 pub IP:Port 자신의 priv IP:Port 상대방의 priv IP:Port] 이다
         sprintf(
             buf1, "%s:%d %s:%d %s %s",
             inet_ntoa(cliAddr1.sin_addr), ntohs(cliAddr1.sin_port),

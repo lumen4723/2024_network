@@ -12,6 +12,7 @@ fn main() {
 
         println!("Client Connected");
 
+        // 쓰레드 생성 (람다 클로저를 이용하여 소유권을 넘김)
         thread::spawn(move || {
             handle_client(stream);
         });

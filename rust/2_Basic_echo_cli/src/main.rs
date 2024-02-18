@@ -13,11 +13,13 @@ fn main() {
 
     input = input.trim().to_string() + ":12345";
 
+    // TCP 스트림(커넥트 소켓)을 생성하고 서버에 연결
     let mut stream = TcpStream::connect(input).unwrap();
 
     let mut buffer = [0; 1024];
 
     loop {
+        // 무한 루프내에서 에코를 입출력하는 고전적인 에코 클라이언트
         buffer = [0; 1024];
 
         print!("Input: ");
@@ -45,5 +47,6 @@ fn main() {
         stdout().flush().unwrap();
     }
 
+    // 우아한 종료
     // stream.shutdown(Shutdown::Both).unwrap();
 }

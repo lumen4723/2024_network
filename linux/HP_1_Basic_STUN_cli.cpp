@@ -2,7 +2,7 @@
 
 char *getIPonDNS(string domain);
 
-void getTargetIP (char *buf, string &ip, string &port);
+void getTargetIP (char *buf, string &ip, string &port, bool isLocalNet);
 
 int main() {
     string server;
@@ -58,12 +58,13 @@ int main() {
         return 0;
     }
 
-    cout << "Echo: " << buf << endl;
+    cout << "STUN: " << buf << endl;
 
 
 
+    bool isLocalNet = false; // 로컬 넷(같은 NAT)에서 홀펀칭을 하려면 true로 변경
     string destIP, destPort;
-    getTargetIP(buf, destIP, destPort);
+    getTargetIP(buf, destIP, destPort, isLocalNet);
 
     cout << "Destination IP: " << destIP << ":" << destPort << endl;
 
@@ -101,7 +102,6 @@ int main() {
     }
 
 
-
     return 0;
 }
 
@@ -123,7 +123,7 @@ char *getIPonDNS(string domain) {
     return ip;
 }
 
-void getTargetIP (char *buf, string &ip, string &port) {
+void getTargetIP (char *buf, string &ip, string &port, bool isLocalNet) {
     istringstream iss(buf);
     vector<string> tokens;
     string token;
@@ -133,11 +133,8 @@ void getTargetIP (char *buf, string &ip, string &port) {
     
     // [0]: 자신의 pub IP:Port, [1]: 상대의 pub IP:Port,
     // [2]: 자신의 priv IP:Port, [3]: 상대의 priv IP:Port
-
-    if ( // 자신의 pub IP와 상대의 pub IP가 같다면 사설 IP:Port를 사용
-        tokens[0].substr(0, tokens[0].find(':'))
-        == tokens[1].substr(0, tokens[1].find(':'))
-    ) {
+    
+    if (isLocalNet) { // 내부망(같은 NAT)일 경우
         ip = tokens[3].substr(0, tokens[3].find(':'));
         port = tokens[3].substr(tokens[3].find(':') + 1);
         return;

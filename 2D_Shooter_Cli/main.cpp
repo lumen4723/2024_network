@@ -27,7 +27,7 @@ int main() {
     vector<Chara> players;
     vector<Bullet> bullets;
 
-    // 컴포넌트 초기화 로직 함수
+    // 구현할 컴포넌트 초기화 로직 함수
     Init_Comp(players, bullets, shader);
 
 
@@ -42,7 +42,7 @@ int main() {
         Update_Comp(players, bullets, shader);
 
 
-        // 그리기
+        // 그리기 함수(안 바꿔도 될 것임)
         // 함수 사용 규칙은 players와 bullets에 값을 정상적으로 넣으면 두 객체를 그릴 수 있게 됨
         make_Vertex_Attrs_And_Draw(
             VAOs, VBOs, EBOs,
@@ -53,6 +53,8 @@ int main() {
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+
+    // 창 닫는 속도를 빠르게 하기 위해 주석처리
 
     // glDeleteBuffers(EBOs.size(), EBOs.data());
     // glDeleteBuffers(VBOs.size(), VBOs.data());
