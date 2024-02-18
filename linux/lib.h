@@ -32,6 +32,12 @@
 #include <condition_variable>
 #include <future>
 
+#include <ifaddrs.h>
+#include <sys/stat.h>
+#include <net/if.h>
+#include <sys/ioctl.h>
+#include <sstream>
+
 using namespace std;
 
 #define OUT
