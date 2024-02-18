@@ -1,0 +1,84 @@
+#include "lib.h"
+
+int main() {
+    WSAData wsaData;
+    WSAStartup(MAKEWORD(2, 2), &wsaData);
+
+    SOCKET servsock = socket(AF_INET, SOCK_DGRAM, 0);
+    if (servsock == INVALID_SOCKET) {
+        cout << "socket() error" << endl;
+        return 0;
+    }
+
+    SOCKADDR_IN servAddr;
+    memset(&servAddr, 0, sizeof(servAddr));
+    servAddr.sin_family = AF_INET;
+    servAddr.sin_addr.s_addr = htonl(INADDR_ANY);
+    servAddr.sin_port = htons(3478);
+
+    if (bind(servsock, (SOCKADDR*)&servAddr, sizeof(servAddr)) == SOCKET_ERROR) {
+        cout << "bind() error" << endl;
+        return 0;
+    }
+
+    while (true) {
+        SOCKADDR_IN cliAddr1;
+        int cliAddrLen1 = sizeof(cliAddr1);
+        memset(&cliAddr1, 0, sizeof(cliAddr1));
+
+        SOCKADDR_IN cliAddr2;
+        int cliAddrLen2 = sizeof(cliAddr2);
+        memset(&cliAddr2, 0, sizeof(cliAddr2));
+
+        char buf1[1024], buf2[1024], buf3[22], buf4[22];
+
+        int recvlen = recvfrom(servsock, buf1, sizeof(buf1), 0, (sockaddr*)&cliAddr1, &cliAddrLen1);
+        if (recvlen == SOCKET_ERROR) {
+            cout << "recvfrom() error" << endl;
+            return 0;
+        }
+
+        recvlen = recvfrom(servsock, buf2, sizeof(buf2), 0, (sockaddr*)&cliAddr2, &cliAddrLen2);
+        if (recvlen == SOCKET_ERROR) {
+            cout << "recvfrom() error" << endl;
+            return 0;
+        }
+
+        // cout << "recv1: " << buf1 << endl;
+        memcpy(buf3, buf1, 22);
+
+        // cout << "recv2: " << buf2 << endl;
+        memcpy(buf4, buf2, 22);
+
+        sprintf(
+            buf1, "%s:%d %s:%d %s %s",
+            inet_ntoa(cliAddr1.sin_addr), ntohs(cliAddr1.sin_port),
+            inet_ntoa(cliAddr2.sin_addr), ntohs(cliAddr2.sin_port),
+            buf3, buf4
+        );
+
+        sprintf(
+            buf2, "%s:%d %s:%d %s %s",
+            inet_ntoa(cliAddr2.sin_addr), ntohs(cliAddr2.sin_port),
+            inet_ntoa(cliAddr1.sin_addr), ntohs(cliAddr1.sin_port),
+            buf4, buf3
+        );
+
+        int sendlen = sendto(servsock, buf1, strlen(buf1) + 1, 0, (sockaddr*)&cliAddr1, sizeof(cliAddr1));
+        if (sendlen == SOCKET_ERROR) {
+            cout << "sendto() error" << endl;
+            return 0;
+        }
+
+        sendlen = sendto(servsock, buf2, strlen(buf2) + 1, 0, (sockaddr*)&cliAddr2, sizeof(cliAddr2));
+        if (sendlen == SOCKET_ERROR) {
+            cout << "sendto() error" << endl;
+            return 0;
+        }
+    }
+
+    closesocket(servsock);
+
+    WSACleanup();
+    return 0;
+}
